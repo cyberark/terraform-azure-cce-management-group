@@ -17,7 +17,7 @@ locals {
 }
 
 module "cce" {
-  source              = "./services_modules/cce"
+  source              = "./modules/cce"
   management_group_id = var.management_group_id
   identity_issuer     = local.cce_wif_data["identity_app_issuer"]
   identity_user_id    = local.cce_wif_data["identity_user_id"]
@@ -26,7 +26,7 @@ module "cce" {
 }
 
 module "sca" {
-  source              = "./services_modules/sca"
+  source              = "./modules/sca"
   count               = var.sca.enable && var.sca.shared_resources != null ? 1 : 0
   management_group_id = var.management_group_id
   shared_resources = {
