@@ -79,6 +79,7 @@ module "cce_azure_management_group" {
 | cce_app_id | The CCE app (client) ID |
 | sca_resource_app_id | The SCA Resource app (client) ID (when SCA enabled with shared_resources) |
 | sca_resource_identity_user_id | The SCA Resource trusted username / WIF subject (when SCA enabled with shared_resources) |
+| management_group_onboarding_id | The ID of the management group onboarding in CCE (null when no service is enabled) |
 
 ## What Gets Created
 
