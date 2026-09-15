@@ -71,6 +71,8 @@ module "cce_azure_management_group" {
 | management_group_id | The Azure management group ID | string | n/a | yes |
 | sca.enable | Enable SCA at management group scope | bool | false | no |
 | sca.shared_resources | SCA shared resources from Commons output (required when sca.enable = true). Must include resource_app_id, resource_custom_role_id, resource_wif_user_id. | object | null | no |
+| sca.shared_resources.add_permissions_to_manage_cluster | When true, assigns the K8s custom role at this management group scope. Requires `resource_k8s_custom_role_id` to be non-empty. | bool | false | no |
+| sca.shared_resources.resource_k8s_custom_role_id | The K8s custom role ID from Commons output (required when `add_permissions_to_manage_cluster` is true). | string | null | no |
 
 ## Module Outputs
 
@@ -96,6 +98,7 @@ module "cce_azure_management_group" {
 **When SCA is enabled** (with `sca.enable = true` and `sca.shared_resources` from Commons):
 * Role assignment of the SCA resource app (from Commons) to the SCA resource custom role at this management group scope
 * SCA service registration in CCE for the management group
+* When `shared_resources.add_permissions_to_manage_cluster` is true, assigns the K8s custom role at this management group scope
 
 ### In CyberArk
 
