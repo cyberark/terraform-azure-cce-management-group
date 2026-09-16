@@ -17,6 +17,10 @@ terraform {
 locals {
   role_prefix = "/providers/Microsoft.Management/managementGroups"
   role_scope  = "${local.role_prefix}/${var.management_group_id}"
+
+  service_name    = "cloud-onboarding"
+  service_version = "0.0.1"
+  service_tags    = ["${local.service_name}-version:${local.service_version}"]
 }
 
 
@@ -30,6 +34,7 @@ data "azuread_service_principal" "msgraph" {
 # Create the CCE Application
 resource "azuread_application" "cce_app" {
   display_name = "CyberArk-CCE-app"
+  tags         = local.service_tags
 
   # Required resource access for Microsoft Graph
   required_resource_access {
@@ -47,6 +52,7 @@ resource "azuread_application" "cce_app" {
 # Create a service principal for the application
 resource "azuread_service_principal" "cce_app_sp" {
   client_id = azuread_application.cce_app.client_id
+  tags      = local.service_tags
 }
 
 # Grant admin consent for CrossTenantInformation.ReadBasic.All
