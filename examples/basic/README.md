@@ -13,9 +13,9 @@ This example demonstrates a basic configuration to onboard an Azure management g
 * Microsoft Entra ID (formerly Azure AD) with appropriate permissions
 * Azure management group with appropriate access
 * Azure subscription for provider authentication
-* CyberArk tenant with CCE
+* Idira tenant with CCE
 * Terraform >= 1.8.5
-* CyberArk `idsec` provider configured - https://registry.terraform.io/providers/cyberark/idsec/latest/docs#example-usage  
+* Idira `idsec` provider configured - https://registry.terraform.io/providers/cyberark/idsec/latest/docs#example-usage  
 
 ## Usage
 
@@ -74,7 +74,7 @@ This example demonstrates a basic configuration to onboard an Azure management g
 * Role assignment of the SCA resource app (from commons) to the SCA resource custom role at this management group scope
 * SCA service registration in CCE for the management group
 
-### In CyberArk
+### In Idira
 
 * Management group registration in CCE
 * When SCA is enabled: SCA service resources for the management group
@@ -91,4 +91,4 @@ This example outputs:
 
 After successful deployment:
 
-1. Verify the management group appears in your CCE console
+1. Verify the management group appears in CCE.

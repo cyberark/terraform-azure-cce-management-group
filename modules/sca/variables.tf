@@ -1,5 +1,5 @@
 variable "management_group_id" {
-  description = "The Azure Management Group ID (scope for SCA resource role assignment)"
+  description = "The Azure management group ID (scope for SCA resource role assignment)"
   type        = string
 }
 

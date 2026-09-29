@@ -17,7 +17,7 @@ data "azuread_service_principal" "sca_resource_app_sp" {
   client_id = var.shared_resources.resource_app_id
 }
 
-# Assign the SCA resource app to the SCA resource custom role at this MG scope (per sca.sh OnboardAzureResource)
+# Assign the SCA resource app to the SCA resource custom role at this management group scope (per sca.sh OnboardAzureResource)
 resource "azurerm_role_assignment" "sca_resource_at_mg" {
   scope              = "/providers/Microsoft.Management/managementGroups/${var.management_group_id}"
   role_definition_id = var.shared_resources.resource_custom_role_id

@@ -1,9 +1,9 @@
 variable "entra_id" {
-  description = "The Azure Entra (Tenant) ID"
+  description = "The Microsoft Entra tenant ID."
   type        = string
 }
 
 variable "management_group_id" {
-  description = "The Azure Management Group ID"
+  description = "The Azure management group ID."
   type        = string
 }

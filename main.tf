@@ -50,7 +50,7 @@ resource "idsec_cce_azure_management_group" "create_management_group" {
   depends_on = [module.sca]
 
   services = concat(
-    # SCA service: resource app from sca submodule (resource-level only for MG, per sca.sh)
+    # SCA service: Resource app from SCA submodule (resource-level only for management group, per sca.sh)
     var.sca.enable && var.sca.shared_resources != null ? [
       {
         service_name = "sca"
