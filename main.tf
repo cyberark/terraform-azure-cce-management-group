@@ -2,7 +2,7 @@ terraform {
   required_providers {
     idsec = {
       source  = "cyberark/idsec"
-      version = "0.10.0"
+      version = "0.12.1"
     }
   }
 
@@ -42,6 +42,7 @@ module "sca" {
 resource "idsec_cce_azure_management_group" "create_management_group" {
   entra_id            = var.entra_id
   management_group_id = var.management_group_id
+  cce_version         = "0.0.1"
   count               = local.at_least_1_service_enabled ? 1 : 0
   cce_resources = {
     appId = module.cce[0].cce_app_id
