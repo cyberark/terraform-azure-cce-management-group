@@ -1,7 +1,7 @@
 # CCE Azure Management Group Onboarding Module
 
-This Terraform module onboards Azure management groups to Connect Cloud Environments (CCE) CyberArk SaaS services.
-CCE helps customers easily adopt CyberArk services and establish secure trust relationships with their Azure environments.
+This Terraform module onboards Azure management groups to Connect Cloud Environments (CCE) Idira SaaS services.
+CCE helps customers easily adopt Idira services and establish secure trust relationships with their Azure environments.
 
 ## Overview
 
@@ -19,7 +19,7 @@ This module automates the creation of Microsoft Entra ID applications, service p
 
 Before using this module, ensure that you have the following information and requirements:
 
-1. **CyberArk Identity Security Platform Account**
+1. **Idira Identity Security Platform Account**
    - API credentials (client ID and secret)
    - Tenant URL
 
@@ -32,7 +32,7 @@ Before using this module, ensure that you have the following information and req
    - Terraform >= 1.8.5
    - Microsoft Entra ID Provider
    - Azure RM Provider
-   - CyberArk idsec Provider
+   - Idira idsec Provider
 
 4. **For SCA (Secure Cloud Access)**
    - Use the Commons module (`terraform-azure-cce-commons`) in your root configuration and pass its `sca` output as `sca.shared_resources` when enabling SCA at management group scope.
@@ -100,7 +100,7 @@ module "cce_azure_management_group" {
 * SCA service registration in CCE for the management group
 * When `shared_resources.add_permissions_to_manage_cluster` is true, assigns the K8s custom role at this management group scope
 
-### In CyberArk
+### In Idira
 
 * Management group registration in CCE
 * When SCA is enabled: SCA service resources for the management group
