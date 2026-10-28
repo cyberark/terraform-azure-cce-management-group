@@ -13,7 +13,7 @@ data "idsec_cce_azure_identity_params" "get_wif_data" {}
 
 locals {
   cce_wif_data               = data.idsec_cce_azure_identity_params.get_wif_data.identity_params["cloud_onboarding"]
-  at_least_1_service_enabled = var.sca.enable == true
+  at_least_1_service_enabled = var.sca.enable == true || var.cds.enable == true
 }
 
 module "cce" {
@@ -38,6 +38,16 @@ module "sca" {
   }
 }
 
+module "cds" {
+  source              = "./modules/cds"
+  count               = var.cds.enable && var.cds.shared_resources != null ? 1 : 0
+  management_group_id = var.management_group_id
+  shared_resources = {
+    resource_app_id         = var.cds.shared_resources.resource_app_id
+    resource_custom_role_id = var.cds.shared_resources.resource_custom_role_id
+  }
+}
+
 # Create a simple Azure management group onboarding
 resource "idsec_cce_azure_management_group" "create_management_group" {
   entra_id            = var.entra_id
@@ -48,9 +58,10 @@ resource "idsec_cce_azure_management_group" "create_management_group" {
     appId = module.cce[0].cce_app_id
   }
 
-  depends_on = [module.sca]
+  depends_on = [module.sca, module.cds]
 
-  services = concat(
+  # flatten, not concat: the services' resources have different types
+  services = flatten([
     # SCA service: Resource app from SCA submodule (resource-level only for management group, per sca.sh)
     var.sca.enable && var.sca.shared_resources != null ? [
       {
@@ -70,6 +81,29 @@ resource "idsec_cce_azure_management_group" "create_management_group" {
           } : {}
         )
       }
+    ] : [],
+
+    var.cds.enable && var.cds.shared_resources != null ? [
+      {
+        service_name = "cds"
+        version      = "2.1.0"
+        resources = {
+          application_ids = [
+            var.cds.shared_resources.entra_app_id,
+            var.cds.shared_resources.resource_app_id,
+          ]
+          applications = [
+            {
+              application_id            = var.cds.shared_resources.entra_app_id
+              identity_trusted_username = var.cds.shared_resources.entra_wif_user_id
+            },
+            {
+              application_id            = var.cds.shared_resources.resource_app_id
+              identity_trusted_username = var.cds.shared_resources.resource_wif_user_id
+            }
+          ]
+        }
+      }
     ] : []
-  )
+  ])
 }

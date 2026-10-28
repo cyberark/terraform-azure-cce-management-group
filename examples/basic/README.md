@@ -7,6 +7,7 @@ This example demonstrates a basic configuration to onboard an Azure management g
 * Onboards your Azure management group to CCE
 * Creates the core CCE application with required permissions
 * Optionally enables SCA at management group scope (see step 2 below)  
+* Optionally enables Cloud Discovery (for Cloud service entitlements) for the management group (when `cds.shared_resources` from Commons is provided, see step 2 below)
 
 ## Prerequisites
 
@@ -16,6 +17,8 @@ This example demonstrates a basic configuration to onboard an Azure management g
 * Idira tenant with CCE
 * Terraform >= 1.8.5
 * Idira `idsec` provider configured - https://registry.terraform.io/providers/cyberark/idsec/latest/docs#example-usage  
+* For SCA: run the Commons module first and pass its `sca` output as `sca.shared_resources`
+* For Cloud Discovery: run the Commons module with `cds = { enable = true }` and pass its `cds` output as `cds.shared_resources`
 
 ## Usage
 
@@ -26,7 +29,7 @@ This example demonstrates a basic configuration to onboard an Azure management g
     management_group_id = "my-management-group-id"
     ```
 
-2. (Optional) To enable SCA at management group scope, pass `sca` with `shared_resources` from your CCE Azure Commons module output in the module block:
+2. (Optional) To enable SCA or Cloud Discovery at management group scope, pass `sca` or `cds` with `shared_resources` from your CCE Azure Commons module output in the module block. For Cloud Discovery, enable it in Commons with `cds = { enable = true }`:
 
     ```hcl
     module "cce_azure_management_group" {
@@ -37,8 +40,14 @@ This example demonstrates a basic configuration to onboard an Azure management g
         enable = true
         shared_resources = module.cce_azure_shared.sca  # from terraform-azure-cce-commons
       }
+      cds = {
+        enable           = true
+        shared_resources = module.cce_azure_shared.cds  # from terraform-azure-cce-commons
+      }
     }
     ```
+
+    For the full Cloud Discovery steps, including offboarding, see the `examples/cloud_discovery_onboarding` example in `terraform-azure-cce-commons`.
 
 3. Initialize Terraform:  
 
@@ -74,10 +83,15 @@ This example demonstrates a basic configuration to onboard an Azure management g
 * Role assignment of the SCA resource app (from commons) to the SCA resource custom role at this management group scope
 * SCA service registration in CCE for the management group
 
+**When Cloud Discovery is enabled** (with `cds.enable = true` and `cds.shared_resources` from commons):
+* Cloud Discovery access for the management group, using the shared resources from commons
+* Cloud Discovery service registration in CCE for the management group
+
 ### In Idira
 
 * Management group registration in CCE
 * When SCA is enabled: SCA service resources for the management group
+* When Cloud Discovery is enabled: Cloud Discovery service resources for the management group
 
 ## Outputs
 

@@ -1,6 +1,6 @@
 # CCE Azure Management Group Onboarding Module
 
-This Terraform module onboards Azure management groups to Connect Cloud Environments (CCE) Idira SaaS services.
+This Terraform module onboards Azure management groups to Connect cloud environments (CCE) Idira SaaS services.
 CCE helps customers easily adopt Idira services and establish secure trust relationships with their Azure environments.
 
 ## Overview
@@ -14,6 +14,7 @@ This module automates the creation of Microsoft Entra ID applications, service p
 * **Management Group Reader Role**: Assigns appropriate permissions at the management group scope
 * **Workload Identity Federation**: Configures federated identity credentials for secure, passwordless authentication
 * **SCA (Secure Cloud Access)**: When enabled with `shared_resources` from Commons, assigns the SCA resource app to the SCA resource custom role at this management group scope and registers SCA with CCE
+* **Cloud Discovery**: When enabled with `shared_resources` from Commons, assigns the Cloud Discovery resource app to the Cloud Discovery resource custom role at this management group scope and registers Cloud Discovery with CCE
 
 ## Prerequisites
 
@@ -36,6 +37,9 @@ Before using this module, ensure that you have the following information and req
 
 4. **For SCA (Secure Cloud Access)**
    - Use the Commons module (`terraform-azure-cce-commons`) in your root configuration and pass its `sca` output as `sca.shared_resources` when enabling SCA at management group scope.
+
+5. **For Cloud Discovery**
+   - Use the Commons module (`terraform-azure-cce-commons`) with `cds.enable = true` in your root configuration and pass its `cds` output as `cds.shared_resources`. See the `examples/cloud_discovery_onboarding` example ("Onboard Specific Management Groups or Subscriptions" section) in `terraform-azure-cce-commons`.
 
 ## Usage
 
@@ -63,6 +67,20 @@ module "cce_azure_management_group" {
 }
 ```
 
+### With Cloud Discovery Enabled
+
+```hcl
+module "cce_azure_management_group" {
+  source              = "path/to/module"
+  entra_id            = "0b659685-1a00-43cd-b994-555bac390ecf"
+  management_group_id = "my-management-group-id"
+  cds = {
+    enable           = true
+    shared_resources = module.cce_azure_shared.cds  # From terraform-azure-cce-commons
+  }
+}
+```
+
 ## Module Inputs
 
 | Name | Description | Type | Default | Required |
@@ -73,6 +91,8 @@ module "cce_azure_management_group" {
 | sca.shared_resources | SCA shared resources from Commons output (required when sca.enable = true). Must include resource_app_id, resource_custom_role_id, resource_wif_user_id. | object | null | no |
 | sca.shared_resources.add_permissions_to_manage_cluster | When true, assigns the K8s custom role at this management group scope. Requires `resource_k8s_custom_role_id` to be non-empty. | bool | false | no |
 | sca.shared_resources.resource_k8s_custom_role_id | The K8s custom role ID from Commons output (required when `add_permissions_to_manage_cluster` is true). | string | null | no |
+| cds.enable | Enable Cloud Discovery at management group scope | bool | false | no |
+| cds.shared_resources | Cloud Discovery shared resources from Commons output (required when cds.enable = true). Must include entra_app_id, entra_wif_user_id, resource_app_id, resource_custom_role_id, resource_wif_user_id. | object | null | no |
 
 ## Module Outputs
 
@@ -100,10 +120,16 @@ module "cce_azure_management_group" {
 * SCA service registration in CCE for the management group
 * When `shared_resources.add_permissions_to_manage_cluster` is true, assigns the K8s custom role at this management group scope
 
+**When Cloud Discovery is enabled** (with `cds.enable = true` and `cds.shared_resources` from Commons):
+* Role assignment of the Cloud Discovery resource app (from Commons) to the Cloud Discovery resource custom role at this management group scope.
+* Cloud Discovery service registration in CCE for the management group, including both Cloud Discovery apps (Entra and resource). The apps, custom roles, and the Entra app's root management group assignment are created by Commons.
+* To offboard Cloud Discovery, set `cds.enable = false` and apply. Only after every level is offboarded, disable Cloud Discovery in Commons and apply to delete the shared resources. Do not remove the module block or run `terraform destroy`. This will offboard every service, not only Cloud Discovery.
+
 ### In Idira
 
 * Management group registration in CCE
 * When SCA is enabled: SCA service resources for the management group
+* When Cloud Discovery is enabled: Cloud Discovery service resources for the management group
 
 ## Examples
 
@@ -111,7 +137,7 @@ See the [examples](./examples) directory for complete, working examples.
 
 ## Documentation
 
-For more information about Connect Cloud Environments, see [CyberArk Documentation](https://docs.cyberark.com/admin-space/latest/en/content/cce/cce-overview.htm).
+For more information about Connect cloud environments, see [CyberArk Documentation](https://docs.cyberark.com/admin-space/latest/en/content/cce/cce-overview.htm).
 
 ## Licensing
 
@@ -125,4 +151,4 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## About
 
-CyberArk is a global leader in **Identity Security**, providing powerful solutions for managing privileged access. Learn more at [www.cyberark.com](https://www.cyberark.com).  
+Idira is a global leader in **Identity Security**, providing powerful solutions for managing privileged access. Learn more at [www.cyberark.com](https://www.cyberark.com).  
