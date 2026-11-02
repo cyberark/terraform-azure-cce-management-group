@@ -13,7 +13,7 @@ data "idsec_cce_azure_identity_params" "get_wif_data" {}
 
 locals {
   cce_wif_data               = data.idsec_cce_azure_identity_params.get_wif_data.identity_params["cloud_onboarding"]
-  at_least_1_service_enabled = var.sca.enable == true || var.cds.enable == true
+  at_least_1_service_enabled = var.sca.enable == true || var.secrets_hub.enable == true || var.cds.enable == true
 }
 
 module "cce" {
@@ -38,6 +38,13 @@ module "sca" {
   }
 }
 
+module "secrets_hub" {
+  source              = "./modules/secrets_hub"
+  count               = var.secrets_hub.enable ? 1 : 0
+  management_group_id = var.management_group_id
+  shared_resources    = var.secrets_hub.shared_resources
+}
+
 module "cds" {
   source              = "./modules/cds"
   count               = var.cds.enable && var.cds.shared_resources != null ? 1 : 0
@@ -58,7 +65,7 @@ resource "idsec_cce_azure_management_group" "create_management_group" {
     appId = module.cce[0].cce_app_id
   }
 
-  depends_on = [module.sca, module.cds]
+  depends_on = [module.sca, module.secrets_hub, module.cds]
 
   # flatten, not concat: the services' resources have different types
   services = flatten([
@@ -80,6 +87,21 @@ resource "idsec_cce_azure_management_group" "create_management_group" {
             add_permissions_to_manage_cluster = true
           } : {}
         )
+      }
+    ] : [],
+    # Secrets Hub service: app from commons, role assignments at this management group. This mirrors the reference Secrets Hub onboarding script; no wait is needed before registration because depends_on already orders the role assignments first.
+    var.secrets_hub.enable ? [
+      {
+        service_name = "secrets_hub"
+        version      = "0.0.3"
+        resources = {
+          applications = [
+            {
+              application_id            = var.secrets_hub.shared_resources.app_id
+              identity_trusted_username = var.secrets_hub.shared_resources.identity_trusted_username
+            }
+          ]
+        }
       }
     ] : [],
 

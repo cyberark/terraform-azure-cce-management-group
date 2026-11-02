@@ -78,3 +78,26 @@ variable "cds" {
   }
 }
 
+variable "secrets_hub" {
+  description = "Secrets Hub configuration. When enable is true, shared_resources (the commons secrets_hub output) is required. The management group only consumes it and assigns the Secrets Hub custom role and Key Vault Secrets Officer at this management group scope."
+  type = object({
+    enable = optional(bool, false)
+    shared_resources = optional(object({
+      app_id                    = optional(string)
+      custom_role_id            = optional(string)
+      identity_trusted_username = optional(string)
+    }), null)
+  })
+  default = { enable = false, shared_resources = null }
+
+  validation {
+    condition = (
+      !var.secrets_hub.enable ||
+      (var.secrets_hub.shared_resources != null &&
+        try(var.secrets_hub.shared_resources.app_id, null) != null &&
+        try(var.secrets_hub.shared_resources.custom_role_id, null) != null &&
+      try(var.secrets_hub.shared_resources.identity_trusted_username, null) != null)
+    )
+    error_message = "When Secrets Hub is enabled (secrets_hub.enable = true), secrets_hub.shared_resources must be set and must include app_id, custom_role_id and identity_trusted_username (from the commons secrets_hub output)."
+  }
+}

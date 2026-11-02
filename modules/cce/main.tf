@@ -33,7 +33,7 @@ data "azuread_service_principal" "msgraph" {
 
 # Create the CCE Application
 resource "azuread_application" "cce_app" {
-  display_name = "CyberArk-CCE-app"
+  display_name = "Idira-CCE-app"
   tags         = local.service_tags
 
   # Required resource access for Microsoft Graph

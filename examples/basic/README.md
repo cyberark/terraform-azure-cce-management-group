@@ -6,7 +6,7 @@ This example demonstrates a basic configuration to onboard an Azure management g
 
 * Onboards your Azure management group to CCE
 * Creates the core CCE application with required permissions
-* Optionally enables SCA at management group scope (see step 2 below)  
+* Optionally enables SCA and Secrets Hub at management group scope (see step 2 below)  
 * Optionally enables Cloud Discovery (for Cloud service entitlements) for the management group (when `cds.shared_resources` from Commons is provided, see step 2 below)
 
 ## Prerequisites
@@ -49,6 +49,15 @@ This example demonstrates a basic configuration to onboard an Azure management g
 
     For the full Cloud Discovery steps, including offboarding, see the `examples/cloud_discovery_onboarding` example in `terraform-azure-cce-commons`.
 
+   To enable Secrets Hub, pass `secrets_hub` with `shared_resources` from the Commons `secrets_hub` output (see `examples/secrets_hub`):
+
+    ```hcl
+      secrets_hub = {
+        enable           = true
+        shared_resources = module.cce_azure_shared.secrets_hub  # from terraform-azure-cce-commons
+      }
+    ```
+
 3. Initialize Terraform:  
 
     ```bash
@@ -72,7 +81,7 @@ This example demonstrates a basic configuration to onboard an Azure management g
 ### In Azure 
 
 **CCE Application:**
-* Microsoft Entra ID application: `CyberArk-CCE-app`  
+* Microsoft Entra ID application: `Idira-CCE-app`  
 * Service principal for the CCE application  
 * Microsoft Graph API Permissions with admin consent for CCE app:  
   * `CrossTenantInformation.ReadBasic.All` - Allows reading basic cross-tenant information  
