@@ -1,6 +1,6 @@
 # Example: Secrets Hub on an Azure Management Group
 
-This example onboards an Azure management group to Connect cloud environments (CCE) with Secrets Hub enabled.
+This example onboards an Azure management group to Connect Cloud Environments (CCE) with Secrets Hub enabled.
 
 ## What This Example Does
 

@@ -34,7 +34,7 @@ provider "idsec" {
 # custom role at the root management group). Apply once per tenant.
 module "cce_azure_shared" {
   source  = "cyberark/cce-commons/azure"
-  version = "0.8.1"
+  version = "0.8.2"
 
   entra_id = var.entra_id
 

@@ -1,6 +1,6 @@
 # Example: Basic CCE Management Group Onboarding
 
-This example demonstrates a basic configuration to onboard an Azure management group to Connect cloud environments (CCE).
+This example demonstrates a basic configuration to onboard an Azure management group to Connect Cloud Environments (CCE).
 
 ## What This Example Does
 

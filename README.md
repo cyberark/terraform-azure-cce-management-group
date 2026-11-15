@@ -1,6 +1,6 @@
 # CCE Azure Management Group Onboarding Module
 
-This Terraform module onboards Azure management groups to Connect cloud environments (CCE) Idira SaaS services.
+This Terraform module onboards Azure management groups to Connect Cloud Environments (CCE) Idira SaaS services.
 CCE helps customers easily adopt Idira services and establish secure trust relationships with their Azure environments.
 
 ## Overview
@@ -204,7 +204,7 @@ See the [examples](./examples) directory for complete, working examples, includi
 
 ## Documentation
 
-For more information about Connect cloud environments, see [CyberArk Documentation](https://docs.cyberark.com/admin-space/latest/en/content/cce/cce-overview.htm).
+For more information about Connect Cloud Environments, see [CyberArk Documentation](https://docs.cyberark.com/admin-space/latest/en/content/cce/cce-overview.htm).
 
 ## Licensing
 

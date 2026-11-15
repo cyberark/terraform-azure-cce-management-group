@@ -13,6 +13,7 @@ variable "sca" {
   type = object({
     enable = optional(bool, false)
     shared_resources = optional(object({
+      version                           = optional(string)
       entra_app_id                      = optional(string)
       entra_custom_role_id              = optional(string)
       entra_wif_user_id                 = optional(string)
@@ -54,6 +55,7 @@ variable "cds" {
   type = object({
     enable = optional(bool, false)
     shared_resources = optional(object({
+      version                 = optional(string)
       entra_app_id            = optional(string)
       entra_custom_role_id    = optional(string)
       entra_wif_user_id       = optional(string)
@@ -83,6 +85,7 @@ variable "secrets_hub" {
   type = object({
     enable = optional(bool, false)
     shared_resources = optional(object({
+      version                   = optional(string)
       app_id                    = optional(string)
       custom_role_id            = optional(string)
       identity_trusted_username = optional(string)
